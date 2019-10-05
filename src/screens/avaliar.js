@@ -30,7 +30,7 @@ class ScreenAvaliar extends Component {
     const { avaliacoesList } = this.props.avaliacoes;
 
     let avaliacaoJaRealizada = avaliacoesList.find(avaliacao => {
-      return avaliacao.posterId === data.Id;
+      return avaliacao.posterId === data.numero;
     });
 
     if (avaliacaoJaRealizada) {
