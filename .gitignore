@@ -54,3 +54,10 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+android/app/.settings/org.eclipse.buildship.core.prefs
+android/.settings/org.eclipse.buildship.core.prefs
+android/.project
+android/app/.classpath
+ios/avaliadorif/Info.plist
+ios/avaliadorif/Info.plist
+android/app/.project

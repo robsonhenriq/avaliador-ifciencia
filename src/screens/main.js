@@ -47,6 +47,9 @@ class ScreenMain extends Component {
   state = {
     display: false,
     message: ''
+    // Para pegar do modal de sincronizazr
+    // cod_avaliador : '',
+    // senha : ''
   };
 
   toggleModalSinc() {
@@ -73,13 +76,99 @@ class ScreenMain extends Component {
       storage
     };
 
-    // dados = this.props.avaliacoes.avaliacoesList;
-    // // this.state
-    // api
-    //   .post('/per/per_avalia.php', dados)
-    //   .then(response => console.log(response));
+    dados = this.props.avaliacoes.avaliacoesList;
+
+    api
+      .post('/per/per_avalia.php', this.formataJsonNotasCorretamente(dados))
+      .then(response => console.log(response));
     purgeStoredState(persistConfig);
     limparAvaliacoes();
+  }
+
+  formataJsonNotasCorretamente(todasAvaliacoes) {
+    let avaliacoesJsonCorreto = {};
+    // Acrescentando o ARRAY de "avaliacao", no objeto referido
+    avaliacoesJsonCorreto.avaliacao = [];
+    // Declarando OBJETO DE AVALIACOES (formato esperado pelo per_avalia.php)
+    let objAvaliacoes = {
+      cod_poster: 0,
+      cod_avaliador: '1750399',
+      nota1: 0,
+      nota2: 0,
+      nota3: 0,
+      nota4: 0,
+      nota5: 0,
+      nota6: 0,
+      senha: '1750399'
+    };
+
+    // IRÁ SE INICIAR COM 0, colocado um valor estatico aqui para teste
+    let posterIdAtual = 0;
+    let contadorNota = 0;
+
+    for (let i in todasAvaliacoes) {
+      todasAvaliacoes[i].data.map(avaliacoes => {
+        // console.log('todasAvaliacoes: , ', todasAvaliacoes[i]);
+
+        // Se for um POSTER diferente do anterior faz um push do obj montando
+        if (posterIdAtual !== avaliacoes.PosterId && contadorNota <= 5) {
+          // Chamando a fn que tem o switch, para setar as notas
+          this.setaNotaCorretamente(avaliacoes.Id, avaliacoes, objAvaliacoes);
+          contadorNota++;
+        } else {
+          contadorNota = 0;
+          // novo objCom as TODAS as notas de UM POSTER
+          var newObjAvaliacoes = { ...objAvaliacoes };
+          // Quando for a avaliação de um poster diferente, faz um push do Obj
+          avaliacoesJsonCorreto.avaliacao.push(newObjAvaliacoes);
+          this.setaNotaCorretamente(
+            avaliacoes.Id,
+            avaliacoes.Nota,
+            objAvaliacoes
+          );
+          contadorNota++;
+        }
+      });
+    }
+
+    // Inserindo a ultima avaliação
+    avaliacoesJsonCorreto.avaliacao.push(objAvaliacoes);
+
+    // ==== JSON que é para retornar e ser enviado na API
+    console.log('avaliacoesJsonCorreto: ', avaliacoesJsonCorreto);
+    console.log(
+      'JSON avaliacoesJsonCorreto: ',
+      JSON.stringify(avaliacoesJsonCorreto)
+    );
+
+    return JSON.stringify(avaliacoesJsonCorreto);
+  }
+
+  /** Para ser chamada quando ITERA no array com todas as avaliações,
+   * e for setar as notas corretamente, no JSON esperado pela API
+   */
+  setaNotaCorretamente(avaliacaoId, avaliacoes, objAvaliacoes) {
+    objAvaliacoes.cod_poster = avaliacoes.PosterId;
+    switch (parseInt(avaliacaoId)) {
+      case 0:
+        objAvaliacoes.nota1 = avaliacoes.Nota;
+        break;
+      case 1:
+        objAvaliacoes.nota2 = avaliacoes.Nota;
+        break;
+      case 2:
+        objAvaliacoes.nota3 = avaliacoes.Nota;
+        break;
+      case 3:
+        objAvaliacoes.nota4 = avaliacoes.Nota;
+        break;
+      case 4:
+        objAvaliacoes.nota5 = avaliacoes.Nota;
+        break;
+      case 5:
+        objAvaliacoes.nota6 = avaliacoes.Nota;
+        break;
+    }
   }
 
   render() {
