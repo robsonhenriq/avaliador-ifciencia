@@ -121,19 +121,21 @@ class ScreenMain extends Component {
           // Chamando a fn que tem o switch, para setar as notas
           this.setaNotaCorretamente(avaliacoes.Id, avaliacoes, objAvaliacoes);
           contadorNota++;
-        } else {
-          contadorNota = 0;
-          // novo objCom as TODAS as notas de UM POSTER
-          let newObjAvaliacoes = { ...objAvaliacoes };
-          // Quando for a avaliação de um poster diferente, faz um push do Obj
-          avaliacoesJsonCorreto.avaliacao.push(newObjAvaliacoes);
-          this.setaNotaCorretamente(
-            avaliacoes.Id,
-            avaliacoes.Nota,
-            objAvaliacoes
-          );
-          contadorNota++;
         }
+        // ========== APARENTEMENTE NUNCA É PASSADO NO ELSE ========
+        // else {
+        //   contadorNota = 0;
+        //   // novo objCom as TODAS as notas de UM POSTER
+        //   let newObjAvaliacoes = { ...objAvaliacoes };
+        //   // Quando for a avaliação de um poster diferente, faz um push do Obj
+        //   avaliacoesJsonCorreto.avaliacao.push(newObjAvaliacoes);
+        //   this.setaNotaCorretamente(
+        //     avaliacoes.Id,
+        //     avaliacoes.Nota,
+        //     objAvaliacoes
+        //   );
+        //   contadorNota++;
+        // }
       });
     }
 
