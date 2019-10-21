@@ -87,7 +87,7 @@ class ScreenMain extends Component {
 
   formataJsonNotasCorretamente(todasAvaliacoes) {
     let avaliacoesJsonCorreto = {};
-    // Acrescentando o ARRAY de "avaliacao", no objeto referido
+    // Acrescentando o ARRAY de "avaliacao" (chave), no objeto referido
     avaliacoesJsonCorreto.avaliacao = [];
     // Declarando OBJETO DE AVALIACOES (formato esperado pelo per_avalia.php)
     let objAvaliacoes = {
@@ -107,9 +107,15 @@ class ScreenMain extends Component {
     let contadorNota = 0;
 
     for (let i in todasAvaliacoes) {
-      todasAvaliacoes[i].data.map(avaliacoes => {
-        // console.log('todasAvaliacoes: , ', todasAvaliacoes[i]);
+      // Inserindo uma avaliacao, dps de montar o objeto
+      if (contadorNota >= 5) {
+        contadorNota = 0;
 
+        let newObjAvaliacoes = { ...objAvaliacoes };
+        avaliacoesJsonCorreto.avaliacao.push(newObjAvaliacoes);
+      }
+
+      todasAvaliacoes[i].data.map(avaliacoes => {
         // Se for um POSTER diferente do anterior faz um push do obj montando
         if (posterIdAtual !== avaliacoes.PosterId && contadorNota <= 5) {
           // Chamando a fn que tem o switch, para setar as notas
@@ -118,7 +124,7 @@ class ScreenMain extends Component {
         } else {
           contadorNota = 0;
           // novo objCom as TODAS as notas de UM POSTER
-          var newObjAvaliacoes = { ...objAvaliacoes };
+          let newObjAvaliacoes = { ...objAvaliacoes };
           // Quando for a avaliação de um poster diferente, faz um push do Obj
           avaliacoesJsonCorreto.avaliacao.push(newObjAvaliacoes);
           this.setaNotaCorretamente(
